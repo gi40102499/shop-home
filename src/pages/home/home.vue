@@ -172,7 +172,7 @@ export default {
   text-align: center;
 }
 .cell .el-button {
-  width: 40%;
+  width: 70%;
   padding: 5px 0;
 }
 /* 弹窗窗口样式 */

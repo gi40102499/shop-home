@@ -1,5 +1,5 @@
 <template>
-  <div id="specs">
+  <div id="banner">
     <div id="breadcrund">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
@@ -7,20 +7,20 @@
       </el-breadcrumb>
     </div>
     <div id="addManager">
-      <el-button type="success" round @click="addSpecs">添加商品规格</el-button>
+      <el-button type="success" round @click="addBanner">添加轮播图</el-button>
     </div>
     <v-MeunMessageBox :info="info" ref="meunMessageBox"></v-MeunMessageBox>
-    <v-SpecsList
-      @editNowSpecs="editNowSpecs"
-      @delNowSpecs="delNowSpecs"
-    ></v-SpecsList>
+    <v-BannerList
+      @editNowBanner="editNowBanner"
+      @delNowBanner="delNowBanner"
+    ></v-BannerList>
   </div>
 </template>
 
 <script>
 import vMeunMessageBox from "./components/meunMessageBox";
-import vSpecsList from "./components/specsList";
-import { delSpecs, editSpecs } from "../../utils/request";
+import vBannerList from "./components/bannerList";
+import { delBanner, editBanner } from "../../utils/request";
 export default {
   data() {
     return {
@@ -31,40 +31,40 @@ export default {
   },
 
   methods: {
-    addSpecs() {
+    addBanner() {
       this.info = {
         show: true,
-        title: "添加商品规格",
+        title: "添加轮播图",
         type: "添加"
       };
     },
-    editNowSpecs(id) {
-      editSpecs({ id }).then(res => {
+    editNowBanner(id) {
+      editBanner({ id }).then(res => {
         this.info = {
           show: true,
-          title: "编辑商品规格",
+          title: "编辑轮播图",
           type: "编辑"
         };
         res.data.list.id = id; //修改的必要条件
-        this.$refs.meunMessageBox.updataForm(res.data.list[0]);
+        this.$refs.meunMessageBox.updataForm(res.data.list);
       });
     },
-    delNowSpecs(id) {
-      delSpecs({ id }).then(res => {
+    delNowBanner(id) {
+      delBanner({ id }).then(res => {
         this.$message({
           type: "success",
           duration: 1000,
-          message: "删除商品规格操作成功"
+          message: "删除轮播图操作成功"
         });
       });
-    },
+    }
   },
   mounted() {},
   components: {
     vMeunMessageBox,
-    vSpecsList
+    vBannerList
   }
 };
 </script>
 
-<style></style>
+<style scoped></style>

@@ -82,7 +82,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { addSpecs, modifySpecs } from "../../../utils/request";
+import { addSpecs, modifySpecs, specsList } from "../../../utils/request";
 export default {
   data() {
     return {
@@ -98,9 +98,9 @@ export default {
   },
   props: ["info"],
   computed: {
-    // ...mapGetters({
-    //   cateList: "cate/cateList"
-    // })
+    ...mapGetters({
+      specsList: "specs/specsList"
+    })
   },
   methods: {
     addAttrs() {
@@ -125,17 +125,24 @@ export default {
         this.$message.error("请输入分类名称");
         return;
       }
-      // 将规格数组转为字符串
-      this.form.attrs = JSON.stringify(this.dynamicTags);
-      // console.log(this.form);
-      addSpecs(this.form).then(res => {
-        this.$message({
-          type: "success",
-          duration: 1000,
-          message: "添加操作成功"
-        });
-        this.cancel();
-        this.acSpecsList();
+      // 首先判断添加内容是否重复,如果没有再添加
+      specsList().then(res => {
+        if (!res.data.list.some(i => i.specsname == this.form.specsname)) {
+          // 将规格数组转为字符串;
+          this.form.attrs = JSON.stringify(this.dynamicTags);
+          addSpecs(this.form).then(res => {
+            this.$message({
+              type: "success",
+              duration: 1000,
+              message: "添加操作成功"
+            });
+            this.cancel();
+            this.acSpecsCount();
+            this.acSpecsList();
+          });
+        } else {
+          this.$message.error("商品规格名重复");
+        }
       });
     },
     // 接收specsList文件传来的数据,更新表单内容.从而编辑
@@ -171,9 +178,11 @@ export default {
         status: 1
       };
       this.nowAttrs = "";
+      this.dynamicTags = [];
     },
 
     ...mapActions({
+      acSpecsCount: "specs/acSpecsCount",
       acSpecsList: "specs/acSpecsList"
     })
   },

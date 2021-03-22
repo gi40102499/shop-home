@@ -62,7 +62,6 @@ const actions = {
                         };
                     };
                 };
-                console.log();
                 context.commit('muManagerList', managerList)
             })
         })

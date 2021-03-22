@@ -1,5 +1,5 @@
 <template>
-  <div id="manager-list">
+  <div id="specs-list">
     <el-table
       :data="specsList"
       style="width: 100%;margin-bottom: 20px;"
@@ -49,6 +49,17 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="specsCount"
+      :page-size="2"
+      :current-page="nowPage"
+      hide-on-single-page
+      @current-change="nowPageF"
+      style="text-align: center;"
+    >
+    </el-pagination>
   </div>
 </template>
 
@@ -58,12 +69,13 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
+      nowPage: 1
     };
   },
-  computed:{
+  computed: {
     ...mapGetters({
-      specsCount:'specs/specsCount',
-      specsList:'specs/specsList'
+      specsCount: "specs/specsCount",
+      specsList: "specs/specsList"
     })
   },
   methods: {
@@ -72,21 +84,30 @@ export default {
     },
     delNowSpecs(id) {
       this.$emit("delNowSpecs", id);
+      this.acSpecsCount();
+      this.acSpecsList();
+    },
+    nowPageF(e) {
+      this.acPage(e);
+      this.acSpecsCount();
+      this.acSpecsList();
     },
     ...mapActions({
-      acSpecsCount:'specs/acSpecsCount',
-      acSpecsList:'specs/acSpecsList',
+      acSpecsCount: "specs/acSpecsCount",
+      acSpecsList: "specs/acSpecsList",
+      acPage: "specs/acPage"
     })
   },
   mounted() {
-    this.acSpecsCount()
-    this.acSpecsList()
+    this.nowPageF(1);
+    this.acSpecsCount();
+    this.acSpecsList();
   }
 };
 </script>
 
 <style scoped>
-.el-tag{
-  margin:0 2px
+.el-tag {
+  margin: 0 2px;
 }
 </style>

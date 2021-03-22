@@ -7,25 +7,11 @@
     >
       <el-form :model="form">
         <!--  -->
-        <el-form-item label="所属角色" :label-width="formLabelWidth">
-          <el-select v-model="form.pid">
-            <el-option label="--请选择--" value="" disabled> </el-option>
-            <el-option label="顶级分类" :value="0"> </el-option>
-            <el-option
-              v-for="i in cateList"
-              :key="i.id"
-              :label="i.catename"
-              :value="i.id"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <!--  -->
-        <el-form-item label="分类名称" :label-width="formLabelWidth">
+        <el-form-item label="标题" :label-width="formLabelWidth">
           <el-input
-            v-model="form.catename"
+            v-model="form.title"
             autocomplete="off"
-            placeholder="请输入添加商品类型"
+            placeholder="请输入轮播图标题"
           ></el-input>
         </el-form-item>
         <!--  -->
@@ -54,13 +40,16 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" v-if="info.type == '添加'" @click="addCateBtn"
+        <el-button
+          type="primary"
+          v-if="info.type == '添加'"
+          @click="addBannerBtn"
           >添 加</el-button
         >
         <el-button
           type="primary"
           v-if="info.type == '编辑'"
-          @click="modifyCateBtn"
+          @click="modifyBannerBtn"
           >编 辑</el-button
         >
       </div>
@@ -70,14 +59,13 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { addCate, modifyCate } from "../../../utils/request";
+import { addBanner, modifyBanner } from "../../../utils/request";
 export default {
   data() {
     return {
       formLabelWidth: "120px",
       form: {
-        pid: 0,
-        catename: "",
+        title: "",
         img: "",
         status: 1
       },
@@ -87,49 +75,50 @@ export default {
   props: ["info"],
   computed: {
     ...mapGetters({
-      cateList: "cate/cateList"
+      bannerList: "banner/bannerList"
     })
   },
   methods: {
-    addCateBtn() {
-      if (!this.form.catename) {
-        this.$message.error("请输入分类名称");
+    addBannerBtn() {
+      if (!this.testForm()) {
         return;
       }
-      addCate(this.form).then(res => {
+      addBanner(this.form).then(res => {
         this.$message({
           type: "success",
           duration: 1000,
           message: "添加操作成功"
         });
         this.cancel();
-        this.acCateList();
+        this.acBannerList();
       });
     },
-    // 接收cateList文件传来的数据,更新表单内容.从而编辑
+    // 接收bannerList文件传来的数据,更新表单内容.从而编辑
     updataForm(data) {
       // this.imageUrl = this.$localhost + data.img;
-      data.img = '';
+      data.img = "";
       this.form = data;
     },
     // 编辑按钮
-    modifyCateBtn() {
+    modifyBannerBtn() {
       console.log(this.form);
-      modifyCate(this.form).then(res => {
+      if (!this.testForm()) {
+        return;
+      }
+      modifyBanner(this.form).then(res => {
         this.$message({
           type: "success",
           duration: 1000,
           message: "修改商品分类操作成功"
         });
         this.cancel();
-        this.acCateList();
+        this.acBannerList();
       });
     },
     cancel() {
       this.info.show = false;
       this.form = {
-        pid: 0,
-        catename: "",
+        title: "",
         img: "",
         status: 1
       };
@@ -158,8 +147,20 @@ export default {
       this.form.img = file.raw;
     },
     ...mapActions({
-      acCateList: "cate/acCateList"
-    })
+      acBannerList: "banner/acBannerList"
+    }),
+    testForm() {
+      // 判断弹出框是否填写完整
+      if (!(this.form.title && this.form.img)) {
+        this.$message.error("请检查输入内容");
+        return false;
+      };
+      if (this.bannerList.some(i=>i.title==this.form.title)) {
+        this.$message.error("轮播图标题已存在，不能重复！");
+        return false;
+      };
+      return true
+    }
   },
   mounted() {}
 };

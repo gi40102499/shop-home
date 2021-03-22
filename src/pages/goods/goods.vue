@@ -1,5 +1,5 @@
 <template>
-  <div id="specs">
+  <div id="goods">
     <div id="breadcrund">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
@@ -7,20 +7,20 @@
       </el-breadcrumb>
     </div>
     <div id="addManager">
-      <el-button type="success" round @click="addSpecs">添加商品规格</el-button>
+      <el-button type="success" round @click="addGoods">添加商品</el-button>
     </div>
     <v-MeunMessageBox :info="info" ref="meunMessageBox"></v-MeunMessageBox>
-    <v-SpecsList
-      @editNowSpecs="editNowSpecs"
-      @delNowSpecs="delNowSpecs"
-    ></v-SpecsList>
+    <v-GoodsList
+      @editNowGoods="editNowGoods"
+      @delNowGoods="delNowGoods"
+    ></v-GoodsList>
   </div>
 </template>
 
 <script>
 import vMeunMessageBox from "./components/meunMessageBox";
-import vSpecsList from "./components/specsList";
-import { delSpecs, editSpecs } from "../../utils/request";
+import vGoodsList from "./components/goodsList";
+import { delGoods, editGoods } from "../../utils/request";
 export default {
   data() {
     return {
@@ -31,26 +31,26 @@ export default {
   },
 
   methods: {
-    addSpecs() {
+    addGoods() {
       this.info = {
         show: true,
-        title: "添加商品规格",
+        title: "添加商品",
         type: "添加"
       };
     },
-    editNowSpecs(id) {
-      editSpecs({ id }).then(res => {
+    editNowGoods(id) {
+      editGoods({ id }).then(res => {
         this.info = {
           show: true,
-          title: "编辑商品规格",
+          title: "编辑商品",
           type: "编辑"
         };
         res.data.list.id = id; //修改的必要条件
-        this.$refs.meunMessageBox.updataForm(res.data.list[0]);
+        this.$refs.meunMessageBox.updataForm(res.data.list);
       });
     },
-    delNowSpecs(id) {
-      delSpecs({ id }).then(res => {
+    delNowGoods(id) {
+      delGoods({ id }).then(res => {
         this.$message({
           type: "success",
           duration: 1000,
@@ -62,9 +62,11 @@ export default {
   mounted() {},
   components: {
     vMeunMessageBox,
-    vSpecsList
+    vGoodsList
   }
 };
 </script>
 
-<style></style>
+<style scoped>
+
+</style>

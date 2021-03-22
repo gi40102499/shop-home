@@ -1,5 +1,5 @@
 <template>
-  <div id="specs">
+  <div id="seckill">
     <div id="breadcrund">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
@@ -7,20 +7,20 @@
       </el-breadcrumb>
     </div>
     <div id="addManager">
-      <el-button type="success" round @click="addSpecs">添加商品规格</el-button>
+      <el-button type="success" round @click="addSeckill">添加秒杀活动商品</el-button>
     </div>
     <v-MeunMessageBox :info="info" ref="meunMessageBox"></v-MeunMessageBox>
-    <v-SpecsList
-      @editNowSpecs="editNowSpecs"
-      @delNowSpecs="delNowSpecs"
-    ></v-SpecsList>
+    <v-SeckillList
+      @editNowSeckill="editNowSeckill"
+      @delNowSeckill="delNowSeckill"
+    ></v-SeckillList>
   </div>
 </template>
 
 <script>
 import vMeunMessageBox from "./components/meunMessageBox";
-import vSpecsList from "./components/specsList";
-import { delSpecs, editSpecs } from "../../utils/request";
+import vSeckillList from "./components/seckillList";
+import { delSeckill, editSeckill } from "../../utils/request";
 export default {
   data() {
     return {
@@ -31,40 +31,42 @@ export default {
   },
 
   methods: {
-    addSpecs() {
+    addSeckill() {
       this.info = {
         show: true,
-        title: "添加商品规格",
+        title: "添加秒杀活动",
         type: "添加"
       };
     },
-    editNowSpecs(id) {
-      editSpecs({ id }).then(res => {
+    editNowSeckill(id) {
+      editSeckill({ id }).then(res => {
         this.info = {
           show: true,
-          title: "编辑商品规格",
+          title: "编辑秒杀活动",
           type: "编辑"
         };
+        console.log('编辑秒杀活动=====',res);
         res.data.list.id = id; //修改的必要条件
-        this.$refs.meunMessageBox.updataForm(res.data.list[0]);
+        this.$refs.meunMessageBox.updataForm(res.data.list);
       });
     },
-    delNowSpecs(id) {
-      delSpecs({ id }).then(res => {
+    delNowSeckill(id) {
+      console.log(id);
+      delSeckill({ id }).then(res => {
         this.$message({
           type: "success",
           duration: 1000,
-          message: "删除商品规格操作成功"
+          message: "删除秒杀活动操作成功"
         });
       });
-    },
+    }
   },
   mounted() {},
   components: {
     vMeunMessageBox,
-    vSpecsList
+    vSeckillList
   }
 };
 </script>
 
-<style></style>
+<style scoped></style>
